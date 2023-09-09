@@ -7,7 +7,6 @@ module.exports = async (client, interaction) => {
     const localCommands = getLocalCommands();
 
     try {
-        console.log(interaction.member.user.id)
         const commandObject = localCommands.find((cmd) =>
             cmd.name === interaction.commandName
         )

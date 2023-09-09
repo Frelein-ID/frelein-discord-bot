@@ -1,3 +1,6 @@
+const { EmbedBuilder } = require("discord.js");
+const { primaryColor } = require("../../../config.json")
+
 module.exports = {
     deleted: false,
     name: 'ping',
@@ -8,9 +11,13 @@ module.exports = {
         await interaction.deferReply();
 
         const reply = await interaction.fetchReply();
-
         const ping = reply.createdTimestamp - interaction.createdTimestamp;
+        const embed = new EmbedBuilder()
+            .setTitle('Ping result')
+            .setDescription(`Client ${ping} ms | Websocket ${client.ws.ping} ms`)
+            .setColor(`${primaryColor}`)
 
-        interaction.editReply(`Pong! Client ${ping} ms | Websocket ${client.ws.ping} ms`);
+
+        interaction.editReply({ embeds: [embed] });
     },
 };

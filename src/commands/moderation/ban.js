@@ -1,4 +1,4 @@
-const { Client, Interaction, ApplicationCommandOptionType, PermissionFlagsBits, IntegrationApplication } = require('discord.js')
+const { Client, Interaction, ApplicationCommandOptionType, PermissionFlagsBits, IntegrationApplication, EmbedBuilder } = require('discord.js')
 
 module.exports = {
     /**
@@ -15,12 +15,20 @@ module.exports = {
         const targetUser = await interaction.guild.members.fetch(targetUserId);
 
         if (!targetUser) {
-            await interaction.editReply("That user doesn't exist in this server")
+            const embed = new EmbedBuilder()
+                .setTitle('Ban summary')
+                .setDescription("That user doesn't exist in this server")
+                .setColor("Aqua")
+            await interaction.editReply({ embeds: [embed] })
             return
         }
 
         if (targetUser.id === interaction.guild.ownerId) {
-            await interaction.editReply(`You can't ban that user because they're the server owner`)
+            const embed = new EmbedBuilder()
+                .setTitle('Ban summary')
+                .setDescription("You can't ban that user because they're the server owner")
+                .setColor("Aqua")
+            await interaction.editReply({ embeds: [embed] })
             return
         }
 
@@ -29,16 +37,34 @@ module.exports = {
         const botRolePosition = interaction.guild.members.me.roles.highest.position;
 
         if (targetUserRolePosition >= requestUserRolePosition) {
-            await interaction.editReply(`You can't ban that user because they have same/higher role than you`)
+            const embed = new EmbedBuilder()
+                .setTitle('Ban summary')
+                .setDescription("You can't ban that user because they have same/higher role than you")
+                .setColor("Aqua")
+            await interaction.editReply({ embeds: [embed] })
             return
         }
         if (targetUserRolePosition >= botRolePosition) {
-            await interaction.editReply(`I can't ban that user because they have same/higher role than me`)
+            const embed = new EmbedBuilder()
+                .setTitle('Ban summary')
+                .setDescription("I can't ban that user because they have same/higher role than me")
+                .setColor("Aqua")
+            await interaction.editReply({ embeds: [embed] })
             return
         }
         try {
+            const embed = new EmbedBuilder()
+                .setTitle('Ban summary')
+                .setDescription(`User ${targetUser} was banned`)
+                .setColor("Aqua")
+                .addFields(
+                    {
+                        name: "Reason",
+                        value: `${reason}`
+                    }
+                )
             await targetUser.ban({ reason });
-            await interaction.editReply(`User ${targetUser} was banned\nReason: ${reason}`)
+            await interaction.editReply({ embeds: [embed] })
         } catch (error) {
             console.log(`There was an error while banning user : ${error}`)
         }
