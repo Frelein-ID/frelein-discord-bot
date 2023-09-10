@@ -9,15 +9,12 @@ module.exports = {
     testOnly: true,
     callback: async (client, interaction) => {
         await interaction.deferReply();
-
         const reply = await interaction.fetchReply();
         const ping = reply.createdTimestamp - interaction.createdTimestamp;
         const embed = new EmbedBuilder()
             .setTitle('Ping result')
             .setDescription(`Client ${ping} ms | Websocket ${client.ws.ping} ms`)
             .setColor(`${primaryColor}`)
-
-
         interaction.editReply({ embeds: [embed] });
     },
 };

@@ -1,4 +1,5 @@
 const { Client, Interaction, ApplicationCommandOptionType, PermissionFlagsBits, IntegrationApplication, EmbedBuilder } = require('discord.js')
+const { primaryColor } = require("../../../config.json")
 
 module.exports = {
     /**
@@ -13,12 +14,14 @@ module.exports = {
         await interaction.deferReply();
 
         const targetUser = await interaction.guild.members.fetch(targetUserId);
+        const { user } = interaction;
 
         if (!targetUser) {
             const embed = new EmbedBuilder()
                 .setTitle('Ban summary')
                 .setDescription("That user doesn't exist in this server")
-                .setColor("Aqua")
+                .setColor(primaryColor)
+                .setFooter({ text: `Banned by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await interaction.editReply({ embeds: [embed] })
             return
         }
@@ -27,7 +30,8 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Ban summary')
                 .setDescription("You can't ban that user because they're the server owner")
-                .setColor("Aqua")
+                .setColor(primaryColor)
+                .setFooter({ text: `Banned by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await interaction.editReply({ embeds: [embed] })
             return
         }
@@ -40,7 +44,8 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Ban summary')
                 .setDescription("You can't ban that user because they have same/higher role than you")
-                .setColor("Aqua")
+                .setColor(primaryColor)
+                .setFooter({ text: `Banned by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await interaction.editReply({ embeds: [embed] })
             return
         }
@@ -48,21 +53,22 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Ban summary')
                 .setDescription("I can't ban that user because they have same/higher role than me")
-                .setColor("Aqua")
+                .setColor(primaryColor)
+                .setFooter({ text: `Banned by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await interaction.editReply({ embeds: [embed] })
             return
         }
         try {
             const embed = new EmbedBuilder()
-                .setTitle('Ban summary')
-                .setDescription(`User ${targetUser} was banned`)
-                .setColor("Aqua")
+                .setAuthor({ name: `${targetUser.user.globalName} has been banned from this server`, iconURL: `${targetUser.displayAvatarURL({ size: 256 })}` })
+                .setColor(primaryColor)
                 .addFields(
                     {
                         name: "Reason",
                         value: `${reason}`
                     }
                 )
+                .setFooter({ text: `Banned by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await targetUser.ban({ reason });
             await interaction.editReply({ embeds: [embed] })
         } catch (error) {

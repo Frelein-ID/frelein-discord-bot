@@ -1,4 +1,6 @@
 const { Client, Interaction, ApplicationCommandOptionType, PermissionFlagsBits, IntegrationApplication, EmbedBuilder } = require('discord.js')
+const { primaryColor } = require("../../../config.json")
+
 
 module.exports = {
     /**
@@ -13,12 +15,14 @@ module.exports = {
         await interaction.deferReply();
 
         const targetUser = await interaction.guild.members.fetch(targetUserId);
+        const { user } = interaction;
 
         if (!targetUser) {
             const embed = new EmbedBuilder()
                 .setTitle('Kick summary')
                 .setDescription("That user doesn't exist in this server")
-                .setColor("Aqua")
+                .setColor(primaryColor)
+                .setFooter({ text: `Kicked by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await interaction.editReply({ embeds: [embed] })
             return
         }
@@ -27,7 +31,8 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Kick summary')
                 .setDescription("You can't kick that user because they're the server owner")
-                .setColor("Aqua")
+                .setColor(primaryColor)
+                .setFooter({ text: `Kicked by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await interaction.editReply({ embeds: [embed] })
             return
         }
@@ -40,7 +45,8 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Kick summary')
                 .setDescription("You can't kick that user because they have same/higher role than you")
-                .setColor("Aqua")
+                .setColor(primaryColor)
+                .setFooter({ text: `Kicked by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await interaction.editReply({ embeds: [embed] })
             return
         }
@@ -48,22 +54,23 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Kick summary')
                 .setDescription("I can't kick that user because they have same/higher role than me")
-                .setColor("Aqua")
+                .setColor(primaryColor)
+                .setFooter({ text: `Kicked by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await interaction.editReply({ embeds: [embed] })
             return
         }
         try {
             await targetUser.kick({ reason });
             const embed = new EmbedBuilder()
-                .setTitle('Kick summary')
-                .setDescription(`User ${targetUser} was kicked`)
-                .setColor("Aqua")
+                .setAuthor({ name: `${targetUser.user.globalName} has been kicked from this server`, iconURL: `${targetUser.displayAvatarURL({ size: 256 })}` })
+                .setColor(primaryColor)
                 .addFields(
                     {
                         name: "Reason",
                         value: `${reason}`
                     }
                 )
+                .setFooter({ text: `Kicked by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
             await interaction.editReply({ embeds: [embed] })
         } catch (error) {
             console.log(`There was an error while kicking user : ${error}`)

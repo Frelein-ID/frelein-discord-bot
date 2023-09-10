@@ -19,28 +19,12 @@ module.exports = {
             }
             const targetUserId = interaction.options.get('user').value;
             const targetUser = await interaction.guild.members.fetch(targetUserId);
-            const targetCreatedDate = new Date(targetUser.joinedTimestamp)
-            const targetJoinedDate = new Date(targetUser.guild.joinedTimestamp)
             const { user, member } = interaction;
             const embed = new EmbedBuilder()
                 .setColor(primaryColor)
-                .setTitle(`${targetUser.user.globalName}'s information`)
-                .setThumbnail(`${targetUser.displayAvatarURL({ options: { size: 256 } })}`)
-                .addFields(
-                    { name: "\u200B", value: "Basic information" },
-                    { name: "User ID", value: `${targetUser.id}`, inline: true },
-                    { name: "Account created at", value: `${targetCreatedDate}`, inline: true },
-                    { name: "Joined this server at", value: `${targetJoinedDate}`, inline: true },
-                    { name: "\u200B", value: "User information on this server" },
-                    {
-                        name: "Roles", value: `${targetUser.roles.cache.map((role) => {
-                            if (role.name != "@everyone") {
-                                return role.name
-                            }
-                        })}`, inline: true
-                    },
-                    { name: "\u200B", value: "\u200B" },
-                )
+                .setTitle(`${targetUser.user.globalName}'s Avatar`)
+                .setDescription(`${targetUser.displayAvatarURL()}`)
+                .setImage(`${targetUser.displayAvatarURL()}`)
                 .setFooter({ text: `Requested by ${user.globalName} | ${user.id}`, iconURL: `${user.avatarURL()}` })
 
             interaction.editReply({ embeds: [embed] });
@@ -49,8 +33,8 @@ module.exports = {
         }
     },
     deleted: false,
-    name: 'user-info',
-    description: 'Show information of this user',
+    name: 'user-avatar',
+    description: 'Show avatar of this user',
     devOnly: true,
     testOnly: true,
     options: [

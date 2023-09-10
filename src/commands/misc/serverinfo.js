@@ -10,7 +10,6 @@ module.exports = {
     callback: async (client, interaction) => {
         try {
             await interaction.deferReply();
-
             if (!interaction.inGuild()) {
                 interaction.reply({
                     content: "You can only run this command inside a server",
@@ -18,10 +17,8 @@ module.exports = {
                 });
                 return;
             }
-
             const { user, guild } = interaction;
             const owner = await guild.fetchOwner();
-
             const embed = new EmbedBuilder()
                 .setColor(primaryColor)
                 .setAuthor({ name: guild.name, iconURL: guild.iconURL({ size: 256 }) })
